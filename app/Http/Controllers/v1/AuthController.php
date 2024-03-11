@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
@@ -216,7 +217,7 @@ class AuthController extends Controller
     {
         $params = $this->request->all();
 
-        if ($params["language"] === "fr") {
+        if ($params["lang"] === "fr") {
             return response()->json([
                 'language' => "Français"
             ]);
@@ -225,5 +226,16 @@ class AuthController extends Controller
         return response()->json([
             'language' => "English"
         ]);
+    }
+
+    public function data(): JsonResponse
+    {   
+        $response = Http::get('https://official-joke-api.appspot.com/random_joke');
+        
+        if ($response->successful()) {
+            $data = $response->json();
+
+            return response()->json($data);
+        }
     }
 }
